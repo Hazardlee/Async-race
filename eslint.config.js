@@ -12,54 +12,38 @@ import globals from "globals";
 const gitignorePath = path.resolve(".", ".gitignore");
 
 const jsConfig = defineConfig([
-  // ESLint recommended config
   {
     name: "js/config",
     ...js.configs.recommended,
   },
-  // Stylistic plugin
   plugins.stylistic,
-  // Import X plugin
   plugins.importX,
-  // Airbnb base recommended config
   ...configs.base.recommended,
-  // Strict import rules
   rules.base.importsStrict,
 ]);
 
 const reactConfig = defineConfig([
-  // React plugin
   plugins.react,
-  // React hooks plugin
   plugins.reactHooks,
-  // React JSX A11y plugin
   plugins.reactA11y,
-  // Airbnb React recommended config
   ...configs.react.recommended,
-  // Strict React rules
   rules.react.strict,
 ]);
 
 const typescriptConfig = defineConfig([
-  // TypeScript ESLint plugin
   plugins.typescriptEslint,
-  // Airbnb base TypeScript config
   ...configs.base.typescript,
-  // Strict TypeScript rules
   rules.typescript.typescriptEslintStrict,
-  // Airbnb React TypeScript config
   ...configs.react.typescript,
 ]);
 
 const prettierConfig = defineConfig([
-  // Prettier plugin
   {
     name: "prettier/plugin/config",
     plugins: {
       prettier: prettierPlugin,
     },
   },
-  // Prettier config
   {
     name: "prettier/config",
     rules: {
@@ -70,24 +54,39 @@ const prettierConfig = defineConfig([
 ]);
 
 export default defineConfig([
-  // Ignore files and folders listed in .gitignore
   includeIgnoreFile(gitignorePath),
-  // JavaScript config
   ...jsConfig,
-  // React config
   ...reactConfig,
-  // TypeScript config
   ...typescriptConfig,
-  // Prettier config
   ...prettierConfig,
   {
     files: ["**/*.{ts,tsx}"],
-    plugins: { "react-refresh": reactRefresh },
-    rules: {
-      ...reactRefresh.configs.vite.rules,
+    plugins: {
+      "react-refresh": reactRefresh,
     },
     languageOptions: {
       globals: globals.browser,
+      parser: plugins.typescriptEslint.parser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    rules: {
+      ...reactRefresh.configs.vite.rules,
+
+      // 🎯 Требование EPAM: Ограничение длины функций до 40 строк
+      "max-lines-per-function": [
+        "error",
+        { max: 40, skipBlankLines: true, skipComments: true },
+      ],
+
+      // Отключаем обязательный импорт React в React 19 / Vite
+      "react/react-in-jsx-scope": "off",
+
+      // Разрешаем JSX в .tsx файлах
+      "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
     },
   },
 ]);

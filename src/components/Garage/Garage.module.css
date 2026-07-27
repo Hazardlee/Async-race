@@ -1,0 +1,47 @@
+.container {
+  background-color: bisque;
+}
+
+.raceContainer {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.trackContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: white;
+  writing-mode: vertical-rl; 
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  z-index: 3;
+}
+
+.finishLine {
+  right: 20px;
+  background-color: #fff;
+  background-image: 
+    linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000),
+    linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; /* Читаемость текста */
+  border-left: 2px solid #000;
+}
