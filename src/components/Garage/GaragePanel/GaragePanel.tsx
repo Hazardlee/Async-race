@@ -1,15 +1,18 @@
-import Button from '../../common/Button/Button'
-import CarForm from './CarForm/CarForm'
-import styles from './GaragePanel.module.css'
+import CarForm from "./CarForm/CarForm";
+import styles from "./GaragePanel.module.css";
+import Button from "../../common/Button/Button";
 
 const GaragePanel = (): React.ReactElement => (
-   <div className={styles.container}>
-      <div className={styles.wrapper}>
-         <Button variant='race'/><Button variant='reset'/>
-      </div>
-      <CarForm/>
-      <div><Button variant='generate'/></div>
+  <div className={styles.container}>
+    <div className={styles.wrapper}>
+      <Button text="Race" variant="race" />
+      <Button text="Reset" variant="race" />
     </div>
-) 
+    <CarForm />
+    <div>
+      <Button text="Generate" variant="default" />
+    </div>
+  </div>
+);
 
-export default GaragePanel
+export default GaragePanel;

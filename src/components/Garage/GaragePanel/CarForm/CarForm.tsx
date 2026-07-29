@@ -1,15 +1,14 @@
-import Button from "../../../common/Button/Button"
-import styles from './CarForm.module.css'
+import styles from "./CarForm.module.css";
+import Button from "../../../common/Button/Button";
 
-
-const CarForm = ():React.ReactElement => (
+const CarForm = (): React.ReactElement => (
   <div className={styles.container}>
     <div className={styles.wrapper}>
-      <input type="text" className={styles.inputText}></input>
-      <input type="color" className={styles.inputColor }></input>
+      <input className={styles.inputText} type="text" />
+      <input className={styles.inputColor} type="color" />
     </div>
-    <Button variant="create"/>
+    <Button text="Create" variant="default" />
   </div>
-)
+);
 
-export default CarForm
+export default CarForm;

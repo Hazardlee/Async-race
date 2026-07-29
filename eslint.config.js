@@ -76,17 +76,24 @@ export default defineConfig([
     rules: {
       ...reactRefresh.configs.vite.rules,
 
-      // 🎯 Требование EPAM: Ограничение длины функций до 40 строк
-      "max-lines-per-function": [
-        "error",
-        { max: 40, skipBlankLines: true, skipComments: true },
-      ],
+      "max-lines-per-function": ["error", { max: 40 }],
 
-      // Отключаем обязательный импорт React в React 19 / Vite
       "react/react-in-jsx-scope": "off",
 
-      // Разрешаем JSX в .tsx файлах
       "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
+
+      "react/require-default-props": [
+        "error",
+        { functions: "defaultArguments" },
+      ],
+
+      "no-param-reassign": [
+        "error",
+        {
+          props: true,
+          ignorePropertyModificationsFor: ["state"],
+        },
+      ],
     },
   },
 ]);
