@@ -1,12 +1,32 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import type { Car } from "../../types/car";
+import { API_URL } from "../../constants/api";
 
-const fetchCars = createAsyncThunk("/garage/fetch", async (_, thunkAPI) => {
-  const response = await fetch("http://127.0.0.1:3000/garage");
-  const data = (await response.json()) as Car[];
-  console.log(data);
-  return data;
-});
+type NewCar = Omit<Car, "id">;
 
-export default fetchCars;
+export const fetchCars = createAsyncThunk<Car[]>(
+  "/garage/fetch",
+  async (_, thunkAPI) => {
+    const response = await fetch(`${API_URL}/garage`);
+    const data = (await response.json()) as Car[];
+    console.log(data);
+    return data;
+  },
+);
+
+export const createCar = createAsyncThunk<Car, NewCar>(
+  "/garage/post",
+  async (car, thunkAPI) => {
+    const response = await fetch(`${API_URL}/garage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(car),
+    });
+    const data = (await response.json()) as Car;
+    console.log(data, " post ");
+    return data;
+  },
+);

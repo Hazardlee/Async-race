@@ -1,26 +1,37 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import fetchCars from "./thunk";
+import {createCar, fetchCars} from "./thunk";
 
 import type { Car } from "../../types/car";
 
-interface CarState {
-  data: Car[];
+interface GarageState {
+  cars: Car[]
+  createForm: {name: string; color: string}
 }
 
-const initialState: CarState = {
-  data: [],
+const initialState: GarageState = {
+  cars: [],
+  createForm: {name: '', color: '#ffffff'}
 };
 
 export const carsSlice = createSlice({
   name: "cars",
   initialState,
-  reducers: {},
+  reducers: {
+    setCreateForm: (state, action) => {
+      state.createForm = { ...state.createForm, ...action.payload }
+    }
+  },
   extraReducers(builder) {
     builder.addCase(fetchCars.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.cars = action.payload;
+    });
+    builder.addCase(createCar.fulfilled, (state, action) => {
+      state.cars.push(action.payload);
+      state.createForm = { name: '', color: '#ffffff' };
     });
   },
 });
 
+export const {setCreateForm} = carsSlice.actions
 export default carsSlice.reducer;

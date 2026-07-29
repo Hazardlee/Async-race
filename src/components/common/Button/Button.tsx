@@ -20,7 +20,7 @@ const Button = ({
     <button
       className={buttonClass}
       onClick={onClick}
-      type={type === "submit" ? "submit" : "reset"}
+      type={type === "submit" ? "submit" : "button"}
     >
       {text}
     </button>
