@@ -30,3 +30,10 @@ export const createCar = createAsyncThunk<Car, NewCar>(
     return data;
   },
 );
+
+export const deleteCar = createAsyncThunk<number, number>("garage/delete", async (id) => {
+  const response = await fetch(`${API_URL}/garage/${id}`, {
+    method: "DELETE",
+  });
+  return id
+});

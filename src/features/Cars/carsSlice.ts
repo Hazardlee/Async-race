@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import {createCar, fetchCars} from "./thunk";
+import {createCar, deleteCar, fetchCars} from "./thunk";
 
 import type { Car } from "../../types/car";
 
@@ -30,6 +30,9 @@ export const carsSlice = createSlice({
       state.cars.push(action.payload);
       state.createForm = { name: '', color: '#ffffff' };
     });
+    builder.addCase(deleteCar.fulfilled, (state, action) => {
+      state.cars = state.cars.filter((car) => car.id !== action.payload)
+    })
   },
 });
 
