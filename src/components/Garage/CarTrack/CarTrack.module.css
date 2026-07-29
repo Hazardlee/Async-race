@@ -32,3 +32,22 @@
   z-index: 1; 
 }
 
+.controlBox {
+  max-width: 100px;
+  display: flex;
+  align-items: center;
+  gap: 10px
+}
+
+.engineBox {
+  display: flex;
+  flex-direction: column;
+  gap: 3px
+}
+
+.carName {
+  position: relative;
+  z-index: 3;
+  background-color: cadetblue;
+  text-transform: uppercase;
+}

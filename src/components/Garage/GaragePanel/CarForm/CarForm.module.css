@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  gap: 10px
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inputText {
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 3px;
+  max-width: 130px;
+}
+
+.inputColor {
+  width: 30px;
+  border-radius: 3px;
+}

@@ -12,7 +12,7 @@ const Header: React.FC = () => (
           <NavLink className={styles.navLink} to="/">
             Garage
           </NavLink>
-          <NavLink className={styles.navLink} to="/">
+          <NavLink className={styles.navLink} to="/winners">
             Winners
           </NavLink>
         </nav>

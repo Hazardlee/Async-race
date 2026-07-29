@@ -1,19 +1,29 @@
-import type { Car } from '../../../types/car';
-import { CarIcon } from '../../common/CarIcon/CarIcon';
-import styles from './CarTrack.module.css'
+import type { Car } from "../../../types/car";
+import Button from "../../common/Button/Button";
+import { CarIcon } from "../../common/CarIcon/CarIcon";
+import styles from "./CarTrack.module.css";
 
 interface CarTrackProps {
   car: Car;
 }
 
-const CarTrack = ({car}: CarTrackProps):React.ReactElement => (
+const CarTrack = ({ car }: CarTrackProps): React.ReactElement => (
   <div className={styles.container}>
-    <div>carcontrols</div>
+    <div className={styles.controlBox}>
+      <div className={styles.engineBox}>
+        <Button variant='edit'/>
+        <Button variant='delete'/>
+      </div>
+      <div className={styles.engineBox}>
+        <Button variant='start'/>
+        <Button variant='stop'/>
+      </div>
+    </div>
     <div className={styles.track}>
-      <CarIcon/>
-      <div>{car.name}</div>
+      <CarIcon color={car.color}/>
+      <div className={styles.carName}>{car.name}</div>
     </div>
   </div>
-)
+);
 
-export default CarTrack 
+export default CarTrack;
