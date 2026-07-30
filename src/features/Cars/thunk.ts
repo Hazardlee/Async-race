@@ -37,3 +37,17 @@ export const deleteCar = createAsyncThunk<number, number>("garage/delete", async
   });
   return id
 });
+
+export const updateCar = createAsyncThunk<Car, Car>('garage/update', async (car) => {
+  const response = await fetch(`${API_URL}/garage/${car.id}`, {
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({name: car.name, color: car.color})
+  })
+
+  const data = await response.json()
+  console.log(data, ' update ');
+  return data
+})  

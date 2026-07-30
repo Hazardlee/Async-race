@@ -5,6 +5,7 @@ import CarIcon from "../../common/CarIcon/CarIcon";
 import type { Car } from "../../../types/car";
 import { useAppDispatch } from "../../../app/hooks";
 import { deleteCar } from "../../../features/Cars/thunk";
+import { startEditCar } from "../../../features/Cars/carsSlice";
 
 interface CarTrackProps {
   car: Car;
@@ -17,7 +18,11 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
     <div className={styles.container}>
       <div className={styles.controlBox}>
         <div className={styles.engineBox}>
-          <Button text="Edit" variant="default" />
+          <Button
+            text="Edit"
+            variant="default"
+            onClick={() => dispatch(startEditCar(car))}
+          />
           <Button
             text="Delete"
             variant="default"

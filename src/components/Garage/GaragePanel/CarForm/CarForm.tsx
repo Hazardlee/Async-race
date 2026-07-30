@@ -2,26 +2,27 @@ import styles from "./CarForm.module.css";
 import Button from "../../../common/Button/Button";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import React, { useEffect, useState } from "react";
-import { createCar } from "../../../../features/Cars/thunk";
-import { setCreateForm } from "../../../../features/Cars/carsSlice";
+import { createCar, updateCar } from "../../../../features/Cars/thunk";
+import { cancelEdit, setCreateForm } from "../../../../features/Cars/carsSlice";
 
 const CarForm = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const createForm = useAppSelector((state) => state.cars.createForm);
+  let isEditing = createForm.id !== null;
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-     if (createForm.name.length > 12) return;
-    dispatch(createCar(createForm));
+    if (createForm.name.length > 12) return;
+    isEditing
+      ? dispatch(
+          updateCar({
+            id: createForm.id as number,
+            name: createForm.name,
+            color: createForm.color,
+          }),
+        )
+      : dispatch(createCar(createForm));
   };
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   dispatch(setCreateForm({ ...createForm, name: e.target.value }));
-  // };
-
-  // const handleChangeColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   dispatch(setCreateForm({ ...createForm, color: e.target.value }));
-  // };
 
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
@@ -40,7 +41,15 @@ const CarForm = (): React.ReactElement => {
           value={createForm.color}
         />
       </div>
-      <Button text="Create" variant="default" type="submit" />
+      <Button text={isEditing ? "Update" : "Create"} type="submit" />
+
+      {isEditing && (
+        <Button
+          text="Cancel"
+          type="button"
+          onClick={() => dispatch(cancelEdit())}
+        />
+      )}
     </form>
   );
 };
