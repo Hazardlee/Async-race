@@ -9,7 +9,7 @@ interface CarIconProps {
 const CarIcon = ({
   color = "#000000",
   width = 80,
-  height = 60,
+  height = 45,
 }: CarIconProps): React.ReactElement => (
   <svg
     className={styles.carIcon}

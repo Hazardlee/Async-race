@@ -7,21 +7,21 @@ import { cancelEdit, setCreateForm } from "../../../../features/Cars/carsSlice";
 
 const CarForm = (): React.ReactElement => {
   const dispatch = useAppDispatch();
-  const createForm = useAppSelector((state) => state.cars.createForm);
-  let isEditing = createForm.id !== null;
+  const form = useAppSelector((state) => state.cars.form);
+  let isEditing = form.id !== null;
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (createForm.name.length > 12) return;
+    if (form.name.length > 12) return;
     isEditing
       ? dispatch(
           updateCar({
-            id: createForm.id as number,
-            name: createForm.name,
-            color: createForm.color,
+            id: form.id as number,
+            name: form.name,
+            color: form.color,
           }),
         )
-      : dispatch(createCar(createForm));
+      : dispatch(createCar(form));
   };
 
   return (
@@ -31,14 +31,14 @@ const CarForm = (): React.ReactElement => {
           className={styles.inputText}
           type="text"
           onChange={(e) => dispatch(setCreateForm({ name: e.target.value }))}
-          value={createForm.name}
+          value={form.name}
           required
         />
         <input
           className={styles.inputColor}
           type="color"
           onChange={(e) => dispatch(setCreateForm({ color: e.target.value }))}
-          value={createForm.color}
+          value={form.color}
         />
       </div>
       <Button text={isEditing ? "Update" : "Create"} type="submit" />

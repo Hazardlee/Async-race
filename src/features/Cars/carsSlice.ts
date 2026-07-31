@@ -12,14 +12,14 @@ interface CarFormState {
 
 interface GarageState {
   cars: Car[];
-  createForm: CarFormState;
+  form: CarFormState;
 }
 
 const emptyForm: CarFormState = { id: null, name: "", color: "#ffffff" };
 
 const initialState: GarageState = {
   cars: [],
-  createForm: emptyForm,
+  form: emptyForm,
 };
 
 export const carsSlice = createSlice({
@@ -27,13 +27,13 @@ export const carsSlice = createSlice({
   initialState,
   reducers: {
     setCreateForm: (state, action) => {
-      state.createForm = { ...state.createForm, ...action.payload };
+      state.form = { ...state.form, ...action.payload };
     },
     startEditCar: (state, action) => {
-      state.createForm = { ...state.createForm, ...action.payload };
+      state.form = { ...state.form, ...action.payload };
     },
     cancelEdit: (state) => {
-      state.createForm = emptyForm;
+      state.form = emptyForm;
     },
   },
   extraReducers(builder) {
@@ -42,7 +42,7 @@ export const carsSlice = createSlice({
     });
     builder.addCase(createCar.fulfilled, (state, action) => {
       state.cars.push(action.payload);
-      state.createForm = emptyForm;
+      state.form = emptyForm;
     });
     builder.addCase(deleteCar.fulfilled, (state, action) => {
       state.cars = state.cars.filter((car) => car.id !== action.payload);
@@ -52,7 +52,7 @@ export const carsSlice = createSlice({
       if (carToUpdate) {
         Object.assign(carToUpdate, action.payload);
       }
-      state.createForm = emptyForm;
+      state.form = emptyForm;
     });
   },
 });
