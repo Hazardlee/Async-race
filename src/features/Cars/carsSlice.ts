@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import { createCar, deleteCar, fetchCars, updateCar } from "./thunk";
+import { createCar, deleteCar, fetchCars, generateCars, updateCar } from "./thunk";
 
 import type { Car } from "../../types/car";
 
@@ -13,6 +13,8 @@ interface CarFormState {
 interface GarageState {
   cars: Car[];
   form: CarFormState;
+  currentPage: number
+  totalCount: number
 }
 
 const emptyForm: CarFormState = { id: null, name: "", color: "#ffffff" };
@@ -20,42 +22,51 @@ const emptyForm: CarFormState = { id: null, name: "", color: "#ffffff" };
 const initialState: GarageState = {
   cars: [],
   form: emptyForm,
+  currentPage: 1,
+  totalCount: 0
 };
 
 export const carsSlice = createSlice({
   name: "cars",
   initialState,
   reducers: {
-    setCreateForm: (state, action) => {
+    setCreateForm: (state, action: PayloadAction<Partial<CarFormState>>) => {
       state.form = { ...state.form, ...action.payload };
     },
-    startEditCar: (state, action) => {
+    startEditCar: (state, action: PayloadAction<Car>) => {
       state.form = { ...state.form, ...action.payload };
     },
     cancelEdit: (state) => {
       state.form = emptyForm;
     },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload
+    }
   },
   extraReducers(builder) {
     builder.addCase(fetchCars.fulfilled, (state, action) => {
-      state.cars = action.payload;
+      state.cars = action.payload.data;
+      state.totalCount = action.payload.totalCount
     });
     builder.addCase(createCar.fulfilled, (state, action) => {
-      state.cars.push(action.payload);
+      // state.cars.push(action.payload);
       state.form = emptyForm;
     });
     builder.addCase(deleteCar.fulfilled, (state, action) => {
-      state.cars = state.cars.filter((car) => car.id !== action.payload);
     });
     builder.addCase(updateCar.fulfilled, (state, action) => {
-      let carToUpdate = state.cars.find((car) => car.id === action.payload.id);
+      const carToUpdate = state.cars.find(
+        (car) => car.id === action.payload.id,
+      );
       if (carToUpdate) {
         Object.assign(carToUpdate, action.payload);
       }
       state.form = emptyForm;
     });
+    builder.addCase(generateCars.fulfilled, (state, action) => {
+    })
   },
 });
 
-export const { setCreateForm, startEditCar, cancelEdit } = carsSlice.actions;
+export const { setCreateForm, startEditCar, cancelEdit, setCurrentPage } = carsSlice.actions;
 export default carsSlice.reducer;

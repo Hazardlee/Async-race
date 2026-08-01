@@ -2,26 +2,36 @@ import styles from "./CarForm.module.css";
 import Button from "../../../common/Button/Button";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import React, { useEffect, useState } from "react";
-import { createCar, updateCar } from "../../../../features/Cars/thunk";
-import { cancelEdit, setCreateForm } from "../../../../features/Cars/carsSlice";
+import {
+  createCar,
+  fetchCars,
+  updateCar,
+} from "../../../../features/Cars/thunk";
+import { cancelEdit, setCreateForm, setCurrentPage } from "../../../../features/Cars/carsSlice";
+import { GARAGE_PAGE_SIZE } from "../../../../constants/pagination";
 
 const CarForm = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const form = useAppSelector((state) => state.cars.form);
   let isEditing = form.id !== null;
+  const {currentPage, cars} = useAppSelector((state) => state.cars);
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (form.name.length > 12) return;
     isEditing
-      ? dispatch(
+      ? await dispatch(
           updateCar({
             id: form.id as number,
             name: form.name,
             color: form.color,
           }),
         )
-      : dispatch(createCar(form));
+      : await dispatch(createCar(form));
+    
+    const isPageFull = cars.length === GARAGE_PAGE_SIZE
+    if (isPageFull && !isEditing) dispatch(setCurrentPage(currentPage + 1))
+    dispatch(fetchCars(currentPage));
   };
 
   return (

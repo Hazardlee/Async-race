@@ -3,9 +3,9 @@ import Button from "../../common/Button/Button";
 import CarIcon from "../../common/CarIcon/CarIcon";
 
 import type { Car } from "../../../types/car";
-import { useAppDispatch } from "../../../app/hooks";
-import { deleteCar } from "../../../features/Cars/thunk";
-import { startEditCar } from "../../../features/Cars/carsSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { deleteCar, fetchCars } from "../../../features/Cars/thunk";
+import { setCurrentPage, startEditCar } from "../../../features/Cars/carsSlice";
 
 interface CarTrackProps {
   car: Car;
@@ -13,6 +13,14 @@ interface CarTrackProps {
 
 const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
   const dispatch = useAppDispatch();
+  const {currentPage, cars} = useAppSelector((state) => state.cars)
+
+  const handleDelete = async (): Promise<void> => {
+  await dispatch(deleteCar(car.id)).unwrap();
+  const isLastCarOnPage = cars.length === 1
+  if (isLastCarOnPage && currentPage > 1) dispatch(setCurrentPage(currentPage - 1));
+  dispatch(fetchCars(currentPage));
+};
 
   return (
     <div className={styles.container}>
@@ -26,7 +34,7 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
           <Button
             text="Delete"
             variant="default"
-            onClick={() => dispatch(deleteCar(car.id))}
+            onClick={() => handleDelete()}
           />
         </div>
         <div className={styles.engineBox}>

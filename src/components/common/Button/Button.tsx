@@ -1,10 +1,12 @@
 import styles from "./Button.module.css";
 
 interface ButtonProps {
-  text: string;
+  text?: string;
   onClick?: () => void;
   variant?: "default" | "race";
   type?: "button" | "submit";
+  children?: React.ReactNode,
+  disabled?: boolean
 }
 
 const Button = ({
@@ -12,6 +14,8 @@ const Button = ({
   variant = "default",
   type = "button",
   onClick = () => {},
+  children,
+  disabled = false
 }: ButtonProps): React.JSX.Element => {
   const buttonClass =
     variant === "race" ? `${styles.button} ${styles.race}` : styles.button;
@@ -21,8 +25,9 @@ const Button = ({
       className={buttonClass}
       onClick={onClick}
       type={type === "submit" ? "submit" : "button"}
+      disabled= {disabled}
     >
-      {text}
+      {children ?? text}
     </button>
   );
 };
