@@ -15,7 +15,9 @@ interface CarTrackProps {
 
 const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
   const dispatch = useAppDispatch();
-  const { currentPage, cars } = useAppSelector((state) => state.cars);
+  const { currentPage, cars, form } = useAppSelector((state) => state.cars);
+
+  const isEditing = form.id !== null
 
   const handleDelete = async (): Promise<void> => {
     await dispatch(deleteCar(car.id)).unwrap();
@@ -41,6 +43,7 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
             text="Delete"
             variant="default"
             onClick={() => handleDelete()}
+            disabled={isEditing}
           />
         </div>
         <CarControls

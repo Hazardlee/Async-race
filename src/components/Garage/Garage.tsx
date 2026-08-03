@@ -10,6 +10,7 @@ import type { Car } from "../../types/car";
 import Pagination from "../common/Pagination/Pagination";
 import { setCurrentPage } from "../../features/Cars/carsSlice";
 import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
+import { setRaceStatus } from "../../features/Race/raceSlice";
 
 const Garage = (): React.ReactElement => {
   const dispatch = useAppDispatch();
@@ -22,6 +23,12 @@ const Garage = (): React.ReactElement => {
   useEffect(() => {
     dispatch(fetchCars(currentPage));
   }, [dispatch, currentPage]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setRaceStatus("idle"));
+    };
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>

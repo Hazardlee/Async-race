@@ -15,7 +15,6 @@ export const startCar = createAsyncThunk<EngineResponse, number>(
         method: "PATCH",
       },
     );
-
     const data = await response.json();
     console.log(data, " start ");
     return data;
@@ -32,9 +31,6 @@ export const stopCar = createAsyncThunk<void, number>(
       },
     );
 
-    const data = await response.json();
-    console.log(data, " stop ");
-    return data;
   },
 );
 
@@ -44,11 +40,11 @@ export const driveCar = createAsyncThunk<void, number>(
     const response = await fetch(`${API_URL}/engine?id=${id}&status=drive`, {
       method: "PATCH",
     });
-    const data = await response.json();
-    console.log(data, " drive ");
+    
+   
 
     if (response.status === 500) return rejectWithValue(id);
-    console.log(data, " drive1 ");
-    return data;
+    
+    
   },
 );
