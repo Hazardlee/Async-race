@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import CarTrack from "./CarTrack/CarTrack";
 import styles from "./Garage.module.css";
@@ -10,15 +10,21 @@ import type { Car } from "../../types/car";
 import Pagination from "../common/Pagination/Pagination";
 import { setCurrentPage } from "../../features/Cars/carsSlice";
 import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
-import { setRaceStatus } from "../../features/Race/raceSlice";
+import {  setRaceStatus, setRaceWinner } from "../../features/Race/raceSlice";
+import { selectIsCarRacing } from "../../features/CarEngine/CarEngineSlice";
+import Modal from "../common/Modal/Modal";
 
 const Garage = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const { cars, currentPage, totalCount } = useAppSelector(
     (state) => state.cars,
   );
+  const raceStatus = useAppSelector((state) => state.race.raceStatus);
+  const isAnyCarRacing = useAppSelector(selectIsCarRacing);
+  const isRacing = raceStatus === "started" || isAnyCarRacing;
 
   let totalPages = Math.ceil(totalCount / GARAGE_PAGE_SIZE);
+  const winner = useAppSelector((state) => state.race.raceWinner);
 
   useEffect(() => {
     dispatch(fetchCars(currentPage));
@@ -33,6 +39,14 @@ const Garage = (): React.ReactElement => {
   return (
     <div className={styles.container}>
       <h2>Garage</h2>
+      {winner && (
+        <Modal
+          winnerName={winner.name}
+          time={winner.time}
+          onClose={() => dispatch(setRaceWinner(null))}
+          isOpen={!!winner}
+        />
+      )}
       <GaragePanel />
       <div className={styles.raceContainer}>
         <div className={styles.trackContainer}>
@@ -50,6 +64,7 @@ const Garage = (): React.ReactElement => {
           currentPage={currentPage}
           changePage={(newPage: number) => dispatch(setCurrentPage(newPage))}
           totalPages={totalPages}
+          isRacing={isRacing}
         />
       </div>
     </div>

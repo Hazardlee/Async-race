@@ -5,8 +5,9 @@ interface ButtonProps {
   onClick?: () => void;
   variant?: "default" | "race";
   type?: "button" | "submit";
-  children?: React.ReactNode,
-  disabled?: boolean
+  children?: React.ReactNode;
+  disabled?: boolean;
+  className?: string;
 }
 
 const Button = ({
@@ -15,17 +16,25 @@ const Button = ({
   type = "button",
   onClick = () => {},
   children,
-  disabled = false
+  disabled = false,
+  className = "",
 }: ButtonProps): React.JSX.Element => {
-  const buttonClass =
-    variant === "race" ? `${styles.button} ${styles.race}` : styles.button;
+  // const buttonClass =
+  //   variant === "race" ? `${styles.button} ${styles.race}` : styles.button;
+  const buttonClass = [
+    styles.button,
+    variant === "race" && styles.race,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button
       className={buttonClass}
       onClick={onClick}
       type={type === "submit" ? "submit" : "button"}
-      disabled= {disabled}
+      disabled={disabled}
     >
       {children ?? text}
     </button>

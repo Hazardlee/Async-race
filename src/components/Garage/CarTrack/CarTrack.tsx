@@ -17,7 +17,11 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
   const dispatch = useAppDispatch();
   const { currentPage, cars, form } = useAppSelector((state) => state.cars);
 
-  const isEditing = form.id !== null
+  const isEditing = form.id !== null;
+  const { carTrackRef, carRef, handleStart, handleStop, status } =
+    useCarEngine(car);
+
+  const isRacing = status === 'broken' || status === 'driving'
 
   const handleDelete = async (): Promise<void> => {
     await dispatch(deleteCar(car.id)).unwrap();
@@ -27,9 +31,6 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
     dispatch(fetchCars(currentPage));
   };
 
-  const { carTrackRef, carRef, handleStart, handleStop, status } =
-    useCarEngine(car);
-
   return (
     <div className={styles.container}>
       <div className={styles.controlBox}>
@@ -38,19 +39,20 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
             text="Edit"
             variant="default"
             onClick={() => dispatch(startEditCar(car))}
+            disabled={isRacing}
           />
           <Button
             text="Delete"
             variant="default"
             onClick={() => handleDelete()}
-            disabled={isEditing}
+            disabled={isEditing || isRacing}
           />
         </div>
         <CarControls
           onStart={handleStart}
           onStop={handleStop}
-          startDisabled={status === 'broken' || status === 'driving'}
-          stopDisabled={status === 'idle'}
+          startDisabled={status === "broken" || status === "driving"}
+          stopDisabled={status === "idle"}
         />
       </div>
       <div className={styles.track} ref={carTrackRef}>

@@ -6,7 +6,7 @@ import WinnersTable from "./WinnersTable/WinnersTable";
 import { fetchWinners } from "../../features/Winners/thunk";
 import Pagination from "../common/Pagination/Pagination";
 import { WINNERS_PAGE_SIZE } from "../../constants/pagination";
-import { setCurrentPage } from "../../features/Winners/WinnersSlice";
+import { setCurrentPage } from "../../features/Winners/winnersSlice";
 
 const Winners = () => {
   const dispatch = useAppDispatch();

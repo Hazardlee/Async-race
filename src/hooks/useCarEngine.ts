@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { driveCar, startCar, stopCar } from "../features/CarEngine/thunk";
 import type { Car } from "../types/car";
 import { setCarStatus } from "../features/CarEngine/CarEngineSlice";
+import { setRaceWinner } from "../features/Race/raceSlice";
 
 const useCarEngine = (car: Car) => {
   const dispatch = useAppDispatch();
@@ -56,6 +57,10 @@ const useCarEngine = (car: Car) => {
     dispatch(setCarStatus({ id: car.id, status: "driving" }));
 
     watchDriveStatus(animation, requestId)
+
+    animation.finished.then(() => {
+      dispatch(setRaceWinner({id: car.id, name: car.name, time: distance / velocity / 1000}))
+    })
   };
 
   const handleStop = async () => {
