@@ -35,15 +35,17 @@ const CarForm = (): React.ReactElement => {
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isValid) return;
-    isEditing
-      ? await dispatch(
-          updateCar({
-            id: form.id as number,
-            name: form.name,
-            color: form.color,
-          }),
-        )
-      : await dispatch(createCar(form));
+    if (isEditing) {
+      await dispatch(
+        updateCar({
+          id: form.id as number,
+          name: form.name,
+          color: form.color,
+        }),
+      );
+    } else {
+      await dispatch(createCar(form));
+    }
 
     const isPageFull = cars.length === GARAGE_PAGE_SIZE;
     if (isPageFull && !isEditing) dispatch(setCurrentPage(currentPage + 1));

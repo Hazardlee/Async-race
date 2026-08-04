@@ -35,5 +35,6 @@ export const driveCar = createAsyncThunk<undefined, number>(
     });
 
     if (response.status === 500) return rejectWithValue(id);
+    return
   },
 );

@@ -15,7 +15,7 @@ const Button = ({
   variant = "default",
   type = "button",
   onClick = () => {},
-  children,
+  children = null,
   disabled = false,
   className = "",
 }: ButtonProps): React.JSX.Element => {

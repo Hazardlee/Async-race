@@ -26,6 +26,7 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
   const raceStatus = useAppSelector((state) => state.race.raceStatus ?? "idle");
   const requestIdRef = useRef(0);
   const isFirstRender = useRef(true);
+  const commandId = useAppSelector((state) => state.race.commandId ?? 0)
 
   const statusRef = useRef(status);
 
@@ -57,7 +58,8 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
   const handleStart = async () => {
     if (status === "driving" || status === "broken") return;
     if (!carTrackRef.current || !carRef.current) return;
-    const requestId = ++requestIdRef.current;
+    requestIdRef.current += 1;
+    const requestId = requestIdRef.current;
     const { velocity, distance } = await dispatch(startCar(car.id)).unwrap();
     if (requestId !== requestIdRef.current) return;
     const duration = distance / velocity;
@@ -110,7 +112,7 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
     if (raceStatus === "stopped") {
       handleStop();
     }
-  }, [raceStatus]);
+  }, [commandId, raceStatus]);
 
   return { carTrackRef, carRef, handleStart, handleStop, status };
 };
