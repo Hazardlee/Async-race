@@ -5,23 +5,23 @@ import WinnersTable from "./WinnersTable/WinnersTable";
 import { fetchWinners } from "../../features/Winners/thunk";
 import Pagination from "../common/Pagination/Pagination";
 import { WINNERS_PAGE_SIZE } from "../../constants/pagination";
-import { setCurrentPage } from "../../features/Winners/winnersSlice";
+import { setCurrentPage, setSort } from "../../features/Winners/winnersSlice";
 
 const Winners = () => {
   const dispatch = useAppDispatch();
-  const { winners, totalCount, currentPage } = useAppSelector(
+  const { winners, totalCount, currentPage, sortField, sortOrder } = useAppSelector(
     (state) => state.winners,
   );
   const totalPages = Math.ceil(totalCount / WINNERS_PAGE_SIZE);
 
   useEffect(() => {
-    dispatch(fetchWinners(currentPage));
-  }, [dispatch, currentPage]);
+    dispatch(fetchWinners({ page: currentPage, sortField, sortOrder }));
+  }, [dispatch, currentPage, sortField, sortOrder ]);
 
   return (
     <div className={styles.container}>
       <h2>Winners</h2>
-      <WinnersTable winners={winners} />
+      <WinnersTable winners={winners} sortOrder={(field) => dispatch(setSort(field))} />
       <div className={styles.wrapper}>
         <Pagination
           currentPage={currentPage}

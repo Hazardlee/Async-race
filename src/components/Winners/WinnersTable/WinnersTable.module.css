@@ -18,3 +18,11 @@ table td svg {
   display: block;
   margin: 0 auto;
 }
+
+.sort {
+  cursor: pointer;
+}
+
+.sort:hover {
+  background-color: cadetblue;
+}

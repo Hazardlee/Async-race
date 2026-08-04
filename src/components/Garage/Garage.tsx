@@ -10,7 +10,7 @@ import type { Car } from "../../types/car";
 import Pagination from "../common/Pagination/Pagination";
 import { setCurrentPage } from "../../features/Cars/carsSlice";
 import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
-import {  setRaceStatus, setRaceWinner } from "../../features/Race/raceSlice";
+import { setRaceStatus, setRaceWinner } from "../../features/Race/raceSlice";
 import { selectIsCarRacing } from "../../features/CarEngine/CarEngineSlice";
 import Modal from "../common/Modal/Modal";
 
@@ -19,6 +19,7 @@ const Garage = (): React.ReactElement => {
   const { cars, currentPage, totalCount } = useAppSelector(
     (state) => state.cars,
   );
+  const emptyGarage = cars.length === 0;
   const raceStatus = useAppSelector((state) => state.race.raceStatus);
   const isAnyCarRacing = useAppSelector(selectIsCarRacing);
   const isRacing = raceStatus === "started" || isAnyCarRacing;
@@ -38,7 +39,6 @@ const Garage = (): React.ReactElement => {
 
   return (
     <div className={styles.container}>
-      <h2>Garage</h2>
       {winner && (
         <Modal
           winnerName={winner.name}
@@ -47,26 +47,35 @@ const Garage = (): React.ReactElement => {
           isOpen={!!winner}
         />
       )}
+      <h2>Garage</h2>
       <GaragePanel />
-      <div className={styles.raceContainer}>
-        <div className={styles.trackContainer}>
-          {cars.map((car: Car) => (
-            <CarTrack key={car.id} car={car} />
-          ))}
-        </div>
-        <div className={`${styles.line} ${styles.finishLine}`}>
-          <span>FINISH</span>
-        </div>
-      </div>
-      <div className={styles.paginationContainer}>
-        <div>{`Total ${totalCount}`}</div>
-        <Pagination
-          currentPage={currentPage}
-          changePage={(newPage: number) => dispatch(setCurrentPage(newPage))}
-          totalPages={totalPages}
-          isRacing={isRacing}
-        />
-      </div>
+      {emptyGarage ? (
+        <div>No cars</div>
+      ) : (
+        <>
+          <div className={styles.raceContainer}>
+            <div className={styles.trackContainer}>
+              {cars.map((car: Car) => (
+                <CarTrack key={car.id} car={car} />
+              ))}
+            </div>
+            <div className={`${styles.line} ${styles.finishLine}`}>
+              <span>FINISH</span>
+            </div>
+          </div>
+          <div className={styles.paginationContainer}>
+            <div>{`Total ${totalCount}`}</div>
+            <Pagination
+              currentPage={currentPage}
+              changePage={(newPage: number) =>
+                dispatch(setCurrentPage(newPage))
+              }
+              totalPages={totalPages}
+              isRacing={isRacing}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

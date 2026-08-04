@@ -2,7 +2,13 @@ import styles from "./WinnersTable.module.css";
 import CarIcon from "../../common/CarIcon/CarIcon";
 import type { IWinnersWithCars } from "../../../types/winners";
 
-const WinnersTable = ({ winners }: { winners: IWinnersWithCars[] }) => {
+const WinnersTable = ({
+  winners,
+  sortOrder,
+}: {
+  winners: IWinnersWithCars[];
+  sortOrder: (field: 'wins' | 'time') => void;
+}) => {
   return (
     <table className={styles.table}>
       <thead>
@@ -10,8 +16,8 @@ const WinnersTable = ({ winners }: { winners: IWinnersWithCars[] }) => {
           <th scope="col">№</th>
           <th scope="col">Car</th>
           <th scope="col">Name</th>
-          <th scope="col">Wins</th>
-          <th scope="col">Best Time (seconds)</th>
+          <th className={styles.sort} onClick={() => sortOrder('wins')} scope="col">Wins</th>
+          <th className={styles.sort} onClick={() => sortOrder('time')} scope="col">Best Time (seconds)</th>
         </tr>
       </thead>
       <tbody>

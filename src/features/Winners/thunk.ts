@@ -3,44 +3,52 @@ import { API_URL } from "../../constants/api";
 import type { IWinnersWithCars, RaceWinner, Winner } from "../../types/winners";
 import type { Car } from "../../types/car";
 import { WINNERS_PAGE_SIZE } from "../../constants/pagination";
+import type { SortField, SortOrder } from "./winnersSlice";
 
 interface FetchWinners {
   winnersWithCars: IWinnersWithCars[];
   totalCount: number;
 }
 
-export const fetchWinners = createAsyncThunk<FetchWinners, number>(
-  "/winners/fetch",
-  async (page) => {
-    const response = await fetch(
-      `${API_URL}/winners?_page=${page}&_limit=${WINNERS_PAGE_SIZE}`,
-    );
-    const totalCount = Number(response.headers.get("X-Total-Count"));
-    const winners = (await response.json()) as Winner[];
-    console.log(winners, "winners");
-    const carsData = await Promise.all(
-      winners.map((w: Winner) =>
-        fetch(`${API_URL}/garage/${w.id}`).then(
-          (r) => r.json() as Promise<Car>,
-        ),
-      ),
-    );
+export const fetchWinners = createAsyncThunk<
+  FetchWinners,
+  { page: number; sortField: SortField; sortOrder: SortOrder }
+>("/winners/fetch", async ({ page, sortField,  sortOrder}) => {
+  const params = new URLSearchParams({
+    _page: String(page),
+    _limit: String(WINNERS_PAGE_SIZE),
+  });
+  if (sortField) {
+    params.set("_sort", sortField);
+    params.set("_order", sortOrder);
+  }
 
-    const carsMap = new Map(carsData.map((car) => [car.id, car]));
+  const response = await fetch(
+    `${API_URL}/winners?${params}`,
+  );
+  const totalCount = Number(response.headers.get("X-Total-Count"));
+  const winners = (await response.json()) as Winner[];
+  console.log(winners, "winners");
+  const carsData = await Promise.all(
+    winners.map((w: Winner) =>
+      fetch(`${API_URL}/garage/${w.id}`).then((r) => r.json() as Promise<Car>),
+    ),
+  );
 
-    const winnersWithCars = winners.map((w: Winner) => {
-      let car = carsMap.get(w.id);
-      return {
-        ...w,
-        name: car?.name ?? "Unknown",
-        color: car?.color ?? "#000000",
-      };
-    });
-    console.log(winnersWithCars, "winnersWithCars");
+  const carsMap = new Map(carsData.map((car) => [car.id, car]));
 
-    return { winnersWithCars, totalCount };
-  },
-);
+  const winnersWithCars = winners.map((w: Winner) => {
+    let car = carsMap.get(w.id);
+    return {
+      ...w,
+      name: car?.name ?? "Unknown",
+      color: car?.color ?? "#000000",
+    };
+  });
+  console.log(winnersWithCars, "winnersWithCars");
+
+  return { winnersWithCars, totalCount };
+});
 
 export const saveWinner = createAsyncThunk<void, RaceWinner>(
   "winners/save",

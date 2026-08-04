@@ -1,17 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { fetchWinners } from "./thunk";
 import type { IWinnersWithCars, Winner } from "../../types/winners";
 
-interface WinnersViewState  {
-  winners: IWinnersWithCars[]
-  totalCount: number
-  currentPage: number
+export type SortField = "wins" | "time" | null;
+export type SortOrder = "ASC" | "DESC";
+
+interface WinnersViewState {
+  winners: IWinnersWithCars[];
+  totalCount: number;
+  currentPage: number;
+  sortField: SortField;
+  sortOrder: SortOrder;
 }
 
-const initialState: WinnersViewState =  {
+const initialState: WinnersViewState = {
   winners: [],
   totalCount: 0,
-  currentPage: 1
+  currentPage: 1,
+  sortField: null,
+  sortOrder: "ASC",
 };
 
 export const winnersSlice = createSlice({
@@ -19,17 +26,25 @@ export const winnersSlice = createSlice({
   initialState,
   reducers: {
     setCurrentPage: (state, action) => {
-      state.currentPage = action.payload
-    }
+      state.currentPage = action.payload;
+    },
+    setSort: (state, action: PayloadAction<SortField>) => {
+      if (state.sortField === action.payload ) {
+       state.sortOrder = state.sortOrder === "ASC" ? "DESC" : "ASC";
+      } else {
+        state.sortField = action.payload
+        state.sortOrder = "ASC";
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchWinners.fulfilled, (state, action) => {
       state.winners = action.payload.winnersWithCars;
-      state.totalCount = action.payload.totalCount
+      state.totalCount = action.payload.totalCount;
     });
   },
 });
 
-export const {setCurrentPage} = winnersSlice.actions
+export const { setCurrentPage, setSort } = winnersSlice.actions;
 
 export default winnersSlice.reducer;
