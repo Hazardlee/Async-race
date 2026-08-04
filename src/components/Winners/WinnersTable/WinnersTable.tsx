@@ -1,13 +1,10 @@
-import { useEffect } from "react";
 import styles from "./WinnersTable.module.css";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { fetchWinners } from "../../../features/Winners/thunk";
 import CarIcon from "../../common/CarIcon/CarIcon";
 import type { IWinnersWithCars } from "../../../types/winners";
 
 const WinnersTable = ({ winners }: { winners: IWinnersWithCars[] }) => {
   return (
-    <table>
+    <table className={styles.table}>
       <thead>
         <tr>
           <th scope="col">№</th>

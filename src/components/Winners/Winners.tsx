@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import Container from "../common/Container/Container";
 import styles from "./Winners.module.css";
 import WinnersTable from "./WinnersTable/WinnersTable";
 import { fetchWinners } from "../../features/Winners/thunk";

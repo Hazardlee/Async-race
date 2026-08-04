@@ -27,27 +27,26 @@ export const fetchCars = createAsyncThunk<FetchCars, number>(
   },
 );
 
-  export const createCar = createAsyncThunk<Car, NewCar>(
-    "/garage/post",
-    async (car, thunkAPI) => {
-      const response = await fetch(`${API_URL}/garage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(car),
-      });
-      const data = (await response.json()) as Car;
-      return data;
-    },
-  );
+export const createCar = createAsyncThunk<Car, NewCar>(
+  "/garage/post",
+  async (car, thunkAPI) => {
+    const response = await fetch(`${API_URL}/garage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(car),
+    });
+    const data = (await response.json()) as Car;
+    return data;
+  },
+);
 
 export const deleteCar = createAsyncThunk<number, number>(
   "garage/delete",
   async (id) => {
-    const response = await fetch(`${API_URL}/garage/${id}`, {
-      method: "DELETE",
-    });
+    await fetch(`${API_URL}/garage/${id}`, { method: "DELETE" });
+    await fetch(`${API_URL}/winners/${id}`, { method: "DELETE" });
     return id;
   },
 );
