@@ -1,13 +1,13 @@
+import CarControls from "./CarControls/CarControls";
 import styles from "./CarTrack.module.css";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { setCurrentPage, startEditCar } from "../../../features/Cars/carsSlice";
+import { deleteCar, fetchCars } from "../../../features/Cars/thunk";
+import useCarEngine from "../../../hooks/useCarEngine";
 import Button from "../../common/Button/Button";
 import CarIcon from "../../common/CarIcon/CarIcon";
 
 import type { Car } from "../../../types/car";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { deleteCar, fetchCars } from "../../../features/Cars/thunk";
-import { setCurrentPage, startEditCar } from "../../../features/Cars/carsSlice";
-import CarControls from "./CarControls/CarControls";
-import useCarEngine from "../../../hooks/useCarEngine";
 
 interface CarTrackProps {
   car: Car;
@@ -21,7 +21,7 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
   const { carTrackRef, carRef, handleStart, handleStop, status } =
     useCarEngine(car);
 
-  const isRacing = status === 'broken' || status === 'driving'
+  const isRacing = status === "broken" || status === "driving";
 
   const handleDelete = async (): Promise<void> => {
     await dispatch(deleteCar(car.id)).unwrap();
@@ -36,16 +36,16 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
       <div className={styles.controlBox}>
         <div className={styles.engineBox}>
           <Button
+            disabled={isRacing}
+            onClick={() => dispatch(startEditCar(car))}
             text="Edit"
             variant="default"
-            onClick={() => dispatch(startEditCar(car))}
-            disabled={isRacing}
           />
           <Button
+            disabled={isEditing || isRacing}
+            onClick={async () => handleDelete()}
             text="Delete"
             variant="default"
-            onClick={() => handleDelete()}
-            disabled={isEditing || isRacing}
           />
         </div>
         <CarControls
@@ -55,7 +55,7 @@ const CarTrack = ({ car }: CarTrackProps): React.ReactElement => {
           stopDisabled={status === "idle"}
         />
       </div>
-      <div className={styles.track} ref={carTrackRef}>
+      <div ref={carTrackRef} className={styles.track}>
         <div ref={carRef} className={styles.carIcon}>
           <CarIcon color={car.color} />
         </div>

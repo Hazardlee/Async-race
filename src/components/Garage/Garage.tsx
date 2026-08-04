@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import CarTrack from "./CarTrack/CarTrack";
 import styles from "./Garage.module.css";
 import GaragePanel from "./GaragePanel/GaragePanel";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
+import { selectIsCarRacing } from "../../features/CarEngine/CarEngineSlice";
+import { setCurrentPage } from "../../features/Cars/carsSlice";
 import { fetchCars } from "../../features/Cars/thunk";
+import { setRaceStatus, setRaceWinner } from "../../features/Race/raceSlice";
+import Modal from "../common/Modal/Modal";
+import Pagination from "../common/Pagination/Pagination";
 
 import type { Car } from "../../types/car";
-import Pagination from "../common/Pagination/Pagination";
-import { setCurrentPage } from "../../features/Cars/carsSlice";
-import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
-import { setRaceStatus, setRaceWinner } from "../../features/Race/raceSlice";
-import { selectIsCarRacing } from "../../features/CarEngine/CarEngineSlice";
-import Modal from "../common/Modal/Modal";
 
 const Garage = (): React.ReactElement => {
   const dispatch = useAppDispatch();
@@ -24,35 +24,36 @@ const Garage = (): React.ReactElement => {
   const isAnyCarRacing = useAppSelector(selectIsCarRacing);
   const isRacing = raceStatus === "started" || isAnyCarRacing;
 
-  let totalPages = Math.ceil(totalCount / GARAGE_PAGE_SIZE);
+  const totalPages = Math.ceil(totalCount / GARAGE_PAGE_SIZE);
   const winner = useAppSelector((state) => state.race.raceWinner);
 
   useEffect(() => {
     dispatch(fetchCars(currentPage));
   }, [dispatch, currentPage]);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       dispatch(setRaceStatus("idle"));
-    };
-  }, [dispatch]);
+    },
+    [dispatch],
+  );
 
   return (
     <div className={styles.container}>
-      {winner && (
+      {winner ? (
         <Modal
-          winnerName={winner.name}
-          time={winner.time}
-          onClose={() => dispatch(setRaceWinner(null))}
           isOpen={!!winner}
+          onClose={() => dispatch(setRaceWinner(null))}
+          time={winner.time}
+          winnerName={winner.name}
         />
-      )}
+      ) : null}
       <h2>Garage</h2>
       <GaragePanel />
       {emptyGarage ? (
         <div>No cars</div>
       ) : (
-        <>
+        <React.Fragment>
           <div className={styles.raceContainer}>
             <div className={styles.trackContainer}>
               {cars.map((car: Car) => (
@@ -67,14 +68,14 @@ const Garage = (): React.ReactElement => {
             <div>{`Total ${totalCount}`}</div>
             <Pagination
               currentPage={currentPage}
+              isRacing={isRacing}
+              totalPages={totalPages}
               changePage={(newPage: number) =>
                 dispatch(setCurrentPage(newPage))
               }
-              totalPages={totalPages}
-              isRacing={isRacing}
             />
           </div>
-        </>
+        </React.Fragment>
       )}
     </div>
   );

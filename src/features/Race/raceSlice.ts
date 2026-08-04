@@ -1,15 +1,18 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+
+import type { PayloadAction } from "@reduxjs/toolkit";
+
 import type { RaceWinner } from "../../types/winners";
 
 type Status = "idle" | "stopped" | "started";
 
-interface raceEngineState {
+interface RaceEngineState {
   raceStatus: Status;
   raceWinner: RaceWinner | null;
   isWinnerDeclared: boolean;
 }
 
-const initialState: raceEngineState = {
+const initialState: RaceEngineState = {
   raceStatus: "idle",
   raceWinner: null,
   isWinnerDeclared: false,

@@ -38,4 +38,4 @@ export const CAR_MODELS = [
   "Model 3",
 ];
 
-export const HUNDRED_CARS = 100
+export const HUNDRED_CARS = 100;

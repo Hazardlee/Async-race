@@ -1,13 +1,16 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+
+import type { PayloadAction } from "@reduxjs/toolkit";
+
 import type { RootState } from "../../app/store";
 
 type Status = "idle" | "broken" | "driving";
 
-interface carEngineState {
+interface CarEngineState {
   carStatuses: Record<number, Status>;
 }
 
-const initialState: carEngineState = {
+const initialState: CarEngineState = {
   carStatuses: {},
 };
 

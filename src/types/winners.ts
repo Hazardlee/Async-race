@@ -5,8 +5,8 @@ export interface Winner {
 }
 
 export interface IWinnersWithCars extends Winner {
-  name: string,
-  color: string
+  name: string;
+  color: string;
 }
 
 export interface RaceWinner {

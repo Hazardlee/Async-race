@@ -1,11 +1,12 @@
-import { createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import type { Car } from "../../types/car";
-import { API_URL } from "../../constants/api";
-import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
+import API_URL from "../../constants/api";
 import { HUNDRED_CARS } from "../../constants/cars";
+import { GARAGE_PAGE_SIZE } from "../../constants/pagination";
 import getRandomCar from "../../helpers/generateRandomCars";
+
 import type { RootState } from "../../app/store";
+import type { Car } from "../../types/car";
 
 type NewCar = Omit<Car, "id">;
 
@@ -16,20 +17,19 @@ interface FetchCars {
 
 export const fetchCars = createAsyncThunk<FetchCars, number>(
   "/garage/fetch",
-  async (page, thunkAPI) => {
+  async (page) => {
     const response = await fetch(
       `${API_URL}/garage?_page=${page}&_limit=${GARAGE_PAGE_SIZE}`,
     );
-    const totalCount = Number(response.headers.get("X-Total-Count") || 0);
+    const totalCount = Number(response.headers.get("X-Total-Count") ?? 0);
     const data = (await response.json()) as Car[];
-    console.log(data, "fetchcars");
     return { data, totalCount };
   },
 );
 
 export const createCar = createAsyncThunk<Car, NewCar>(
   "/garage/post",
-  async (car, thunkAPI) => {
+  async (car) => {
     const response = await fetch(`${API_URL}/garage`, {
       method: "POST",
       headers: {
@@ -62,8 +62,7 @@ export const updateCar = createAsyncThunk<Car, Car>(
       body: JSON.stringify({ name: car.name, color: car.color }),
     });
 
-    const data = await response.json();
-    console.log(data, " update ");
+    const data = (await response.json()) as Car;
     return data;
   },
 );
@@ -71,7 +70,7 @@ export const updateCar = createAsyncThunk<Car, Car>(
 export const generateCars = createAsyncThunk(
   "generate100cars",
   async (_, { dispatch, getState }) => {
-    const requests = Array.from({ length: HUNDRED_CARS }, (_) =>
+    const requests = Array.from({ length: HUNDRED_CARS }, async () =>
       dispatch(createCar(getRandomCar())).unwrap(),
     );
     await Promise.allSettled(requests);

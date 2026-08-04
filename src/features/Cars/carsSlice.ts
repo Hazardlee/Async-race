@@ -1,6 +1,14 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { createCar, deleteCar, fetchCars, generateCars, updateCar } from "./thunk";
+import {
+  createCar,
+  deleteCar,
+  fetchCars,
+  generateCars,
+  updateCar,
+} from "./thunk";
+
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { Car } from "../../types/car";
 
@@ -13,8 +21,8 @@ interface CarFormState {
 interface GarageState {
   cars: Car[];
   form: CarFormState;
-  currentPage: number
-  totalCount: number
+  currentPage: number;
+  totalCount: number;
 }
 
 const emptyForm: CarFormState = { id: null, name: "", color: "#ffffff" };
@@ -23,7 +31,7 @@ const initialState: GarageState = {
   cars: [],
   form: emptyForm,
   currentPage: 1,
-  totalCount: 0
+  totalCount: 0,
 };
 
 export const carsSlice = createSlice({
@@ -40,20 +48,19 @@ export const carsSlice = createSlice({
       state.form = emptyForm;
     },
     setCurrentPage: (state, action) => {
-      state.currentPage = action.payload
-    }
+      state.currentPage = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchCars.fulfilled, (state, action) => {
       state.cars = action.payload.data;
-      state.totalCount = action.payload.totalCount
+      state.totalCount = action.payload.totalCount;
     });
-    builder.addCase(createCar.fulfilled, (state, action) => {
+    builder.addCase(createCar.fulfilled, (state) => {
       // state.cars.push(action.payload);
       state.form = emptyForm;
     });
-    builder.addCase(deleteCar.fulfilled, (state, action) => {
-    });
+    builder.addCase(deleteCar.fulfilled, () => {});
     builder.addCase(updateCar.fulfilled, (state, action) => {
       const carToUpdate = state.cars.find(
         (car) => car.id === action.payload.id,
@@ -63,10 +70,10 @@ export const carsSlice = createSlice({
       }
       state.form = emptyForm;
     });
-    builder.addCase(generateCars.fulfilled, (state, action) => {
-    })
+    builder.addCase(generateCars.fulfilled, () => {});
   },
 });
 
-export const { setCreateForm, startEditCar, cancelEdit, setCurrentPage } = carsSlice.actions;
+export const { setCreateForm, startEditCar, cancelEdit, setCurrentPage } =
+  carsSlice.actions;
 export default carsSlice.reducer;

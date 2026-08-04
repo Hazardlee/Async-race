@@ -1,6 +1,10 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+
 import { fetchWinners } from "./thunk";
-import type { IWinnersWithCars, Winner } from "../../types/winners";
+
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+import type { IWinnersWithCars } from "../../types/winners";
 
 export type SortField = "wins" | "time" | null;
 export type SortOrder = "ASC" | "DESC";
@@ -29,10 +33,10 @@ export const winnersSlice = createSlice({
       state.currentPage = action.payload;
     },
     setSort: (state, action: PayloadAction<SortField>) => {
-      if (state.sortField === action.payload ) {
-       state.sortOrder = state.sortOrder === "ASC" ? "DESC" : "ASC";
+      if (state.sortField === action.payload) {
+        state.sortOrder = state.sortOrder === "ASC" ? "DESC" : "ASC";
       } else {
-        state.sortField = action.payload
+        state.sortField = action.payload;
         state.sortOrder = "ASC";
       }
     },

@@ -1,16 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { carsSlice } from "../features/Cars/carsSlice";
-import { winnersSlice } from "../features/Winners/winnersSlice";
 import { engineSlice } from "../features/CarEngine/CarEngineSlice";
+import { carsSlice } from "../features/Cars/carsSlice";
 import { raceSlice } from "../features/Race/raceSlice";
+import { winnersSlice } from "../features/Winners/winnersSlice";
 
 const store = configureStore({
   reducer: {
     cars: carsSlice.reducer,
     winners: winnersSlice.reducer,
     engine: engineSlice.reducer,
-    race: raceSlice.reducer
+    race: raceSlice.reducer,
   },
 });
 

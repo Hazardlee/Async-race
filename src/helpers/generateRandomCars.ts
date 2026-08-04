@@ -1,19 +1,18 @@
-import { CAR_BRANDS, CAR_MODELS } from "../constants/cars"
+import { CAR_BRANDS, CAR_MODELS } from "../constants/cars";
 
-const randomCarName = (carItems: Array<string>)  => {
- return carItems[Math.floor(Math.random() * carItems.length)]
-}
+const randomCarName = (carItems: string[]) =>
+  carItems[Math.floor(Math.random() * carItems.length)];
 
 const radomCarColor = () => {
-  let color = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0')
-  return `#${color}`
-}
+  const color = Math.floor(Math.random() * 0xffffff)
+    .toString(16)
+    .padStart(6, "0");
+  return `#${color}`;
+};
 
-const getRandomCar = () => {
-  return {
-    name: `${randomCarName(CAR_BRANDS)} ${randomCarName(CAR_MODELS)}`,
-    color: radomCarColor()
-  }
-}
+const getRandomCar = (): { name: string; color: string } => ({
+  name: `${randomCarName(CAR_BRANDS)} ${randomCarName(CAR_MODELS)}`,
+  color: radomCarColor(),
+});
 
-export default getRandomCar
+export default getRandomCar;

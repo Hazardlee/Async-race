@@ -11,7 +11,7 @@ interface ButtonProps {
 }
 
 const Button = ({
-  text,
+  text = "",
   variant = "default",
   type = "button",
   onClick = () => {},
@@ -19,8 +19,6 @@ const Button = ({
   disabled = false,
   className = "",
 }: ButtonProps): React.JSX.Element => {
-  // const buttonClass =
-  //   variant === "race" ? `${styles.button} ${styles.race}` : styles.button;
   const buttonClass = [
     styles.button,
     variant === "race" && styles.race,
@@ -32,9 +30,9 @@ const Button = ({
   return (
     <button
       className={buttonClass}
+      disabled={disabled}
       onClick={onClick}
       type={type === "submit" ? "submit" : "button"}
-      disabled={disabled}
     >
       {children ?? text}
     </button>
