@@ -14,6 +14,7 @@ import {
 } from "../../../../features/Cars/carsSlice";
 import { GARAGE_PAGE_SIZE } from "../../../../constants/pagination";
 import { selectIsCarRacing } from "../../../../features/CarEngine/CarEngineSlice";
+import { MAX_FORM_NAME } from "../../../../constants/form";
 
 const CarForm = (): React.ReactElement => {
   const dispatch = useAppDispatch();
@@ -22,11 +23,18 @@ const CarForm = (): React.ReactElement => {
   const isAnyCarRacing = useAppSelector(selectIsCarRacing);
   const isRacing = raceStatus === "started" || isAnyCarRacing;
   let isEditing = form.id !== null;
+  const isTooLong = form.name.length > MAX_FORM_NAME;
   const { currentPage, cars } = useAppSelector((state) => state.cars);
+const isEmpty = form.name.length === 0;
+ const isValid = !isEmpty && !isTooLong;
+
+  const errorMessage = isTooLong
+    ? `Name must be fewer than ${MAX_FORM_NAME}`
+    : null;
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (form.name.length > 12) return;
+    if (!isValid) return;;
     isEditing
       ? await dispatch(
           updateCar({
@@ -52,6 +60,7 @@ const CarForm = (): React.ReactElement => {
           value={form.name}
           required
         />
+        {errorMessage && <span className={styles.error}>{errorMessage}</span>}
         <input
           className={styles.inputColor}
           type="color"
@@ -62,7 +71,7 @@ const CarForm = (): React.ReactElement => {
       <Button
         text={isEditing ? "Update" : "Create"}
         type="submit"
-        disabled={isRacing}
+        disabled={isRacing || !isValid}
       />
 
       {isEditing && (

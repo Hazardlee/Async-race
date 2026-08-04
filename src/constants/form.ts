@@ -1,0 +1,1 @@
+export const MAX_FORM_NAME = 12

@@ -1,9 +1,10 @@
 .container {
   display: flex;
-  gap: 10px
+  gap: 10px;
 }
 
 .wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -19,4 +20,11 @@
 .inputColor {
   width: 30px;
   border-radius: 3px;
+}
+
+.error {
+  position: absolute;
+  color: #d33;
+  font-size: 12px;
+  top:80%;
 }
