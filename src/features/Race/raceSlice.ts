@@ -1,12 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { RaceWinner } from "../../types/winners";
 
 type Status = "idle" | "stopped" | "started";
-
-interface RaceWinner {
-  id: number;
-  name: string;
-  time: number;
-}
 
 interface raceEngineState {
   raceStatus: Status;

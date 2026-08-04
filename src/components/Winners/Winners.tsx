@@ -17,7 +17,7 @@ const Winners = () => {
 
   useEffect(() => {
     dispatch(fetchWinners(currentPage));
-  }, [dispatch]);
+  }, [dispatch, currentPage]);
 
   return (
     <div className={styles.container}>
