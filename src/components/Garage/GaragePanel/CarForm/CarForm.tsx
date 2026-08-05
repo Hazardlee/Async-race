@@ -1,57 +1,18 @@
 import React from "react";
 
 import styles from "./CarForm.module.css";
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import MAX_FORM_NAME from "../../../../constants/form";
-import { GARAGE_PAGE_SIZE } from "../../../../constants/pagination";
-import { selectIsCarRacing } from "../../../../features/CarEngine/CarEngineSlice";
-import {
-  cancelEdit,
-  setCreateForm,
-  setCurrentPage,
-} from "../../../../features/Cars/carsSlice";
-import {
-  createCar,
-  fetchCars,
-  updateCar,
-} from "../../../../features/Cars/thunk";
+import { useAppDispatch } from "../../../../app/hooks";
+import { cancelEdit, setCreateForm } from "../../../../features/Cars/carsSlice";
+import useCarFormSubmit from "../../../../hooks/useCarFormSubmit";
+import useCarFormValidation from "../../../../hooks/useCarFormValidation";
+import useRaceStatus from "../../../../hooks/useRaceStatus";
 import Button from "../../../common/Button/Button";
 
 const CarForm = (): React.ReactElement => {
   const dispatch = useAppDispatch();
-  const { currentPage, cars, form } = useAppSelector((state) => state.cars);
-  const raceStatus = useAppSelector((state) => state.race.raceStatus);
-  const isAnyCarRacing = useAppSelector(selectIsCarRacing);
-  const isRacing = raceStatus === "started" || isAnyCarRacing;
-  const isEditing = form.id !== null;
-  const isTooLong = form.name.length > MAX_FORM_NAME;
-  const isEmpty = form.name.length === 0;
-  const isValid = !isEmpty && !isTooLong;
-
-  const errorMessage = isTooLong
-    ? `Name must be fewer than ${MAX_FORM_NAME}`
-    : null;
-
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isValid) return;
-    if (isEditing) {
-      await dispatch(
-        updateCar({
-          id: form.id as number,
-          name: form.name,
-          color: form.color,
-        }),
-      );
-    } else {
-      await dispatch(createCar(form));
-    }
-
-    const isPageFull = cars.length === GARAGE_PAGE_SIZE;
-    if (isPageFull && !isEditing) dispatch(setCurrentPage(currentPage + 1));
-    dispatch(fetchCars(currentPage));
-  };
-
+  const { isRacing } = useRaceStatus();
+  const { form, isValid, errorMessage } = useCarFormValidation();
+  const { handleSubmit, isEditing } = useCarFormSubmit();
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
       <div className={styles.wrapper}>
@@ -77,7 +38,6 @@ const CarForm = (): React.ReactElement => {
         text={isEditing ? "Update" : "Create"}
         type="submit"
       />
-
       {isEditing ? (
         <Button
           onClick={() => dispatch(cancelEdit())}

@@ -1,16 +1,14 @@
 import CarForm from "./CarForm/CarForm";
 import styles from "./GaragePanel.module.css";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectIsCarRacing } from "../../../features/CarEngine/CarEngineSlice";
+import { useAppDispatch } from "../../../app/hooks";
 import { generateCars } from "../../../features/Cars/thunk";
 import { setRaceStatus } from "../../../features/Race/raceSlice";
+import useRaceStatus from "../../../hooks/useRaceStatus";
 import Button from "../../common/Button/Button";
 
 const GaragePanel = (): React.ReactElement => {
   const dispatch = useAppDispatch();
-  const raceStatus = useAppSelector((state) => state.race.raceStatus);
-  const isAnyCarRacing = useAppSelector(selectIsCarRacing);
-  const isRacing = raceStatus === "started" || isAnyCarRacing;
+  const { isRacing } = useRaceStatus();
 
   return (
     <div className={styles.container}>
