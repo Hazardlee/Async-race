@@ -7,10 +7,10 @@ interface WinnersTableProps {
   winners: IWinnersWithCars[];
   sortOrder: (field: "wins" | "time") => void;
 }
-const WinnersTable = ({
-  winners,
-  sortOrder,
-}: WinnersTableProps): React.ReactElement => (
+
+type WTComponent = React.FC<WinnersTableProps>;
+
+const WinnersTable: WTComponent = ({ winners, sortOrder }) => (
   <table className={styles.table}>
     <thead>
       <tr>

@@ -8,7 +8,7 @@ type Status = "idle" | "stopped" | "started";
 
 interface RaceEngineState {
   raceStatus: Status;
-  commandId: number; 
+  commandId: number;
   raceWinner: RaceWinner | null;
   isWinnerDeclared: boolean;
 }

@@ -26,7 +26,7 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
   const raceStatus = useAppSelector((state) => state.race.raceStatus ?? "idle");
   const requestIdRef = useRef(0);
   const isFirstRender = useRef(true);
-  const commandId = useAppSelector((state) => state.race.commandId ?? 0)
+  const commandId = useAppSelector((state) => state.race.commandId ?? 0);
 
   const statusRef = useRef(status);
 
