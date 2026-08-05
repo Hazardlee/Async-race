@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -17,12 +19,28 @@ const Modal = ({
   onClose,
   isOpen,
 }: ModalProps): React.ReactElement | null => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className={styles.overlay} onClick={() => onClose()}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <Button className={styles.close} onClick={() => onClose()}>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        <Button className={styles.close} onClick={onClose}>
           <FontAwesomeIcon icon={faXmark} />
         </Button>
         <span>
