@@ -1,9 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
+import useEngineCleanup from "./useEngineCleanup";
+import useRaceCommandEffect from "./useRaceCommandEffect";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setCarStatus } from "../features/CarEngine/CarEngineSlice";
-import { driveCar, startCar, stopCar } from "../features/CarEngine/thunk";
-import finishRace from "../features/Race/thunk";
+import { startCar, stopCar } from "../features/CarEngine/thunk";
+import dispatchFinishRace from "../helpers/dispatchFinishRace";
+import createDriveAnimation from "../helpers/engineAnimation";
+import watchDriveStatus from "../helpers/watchDriveStatus";
 
 import type { Car } from "../types/car";
 
@@ -23,37 +27,7 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
   const status = useAppSelector(
     (state) => state.engine.carStatuses[car.id] ?? "idle",
   );
-  const raceStatus = useAppSelector((state) => state.race.raceStatus ?? "idle");
-  const requestIdRef = useRef(0);
-  const isFirstRender = useRef(true);
-  const commandId = useAppSelector((state) => state.race.commandId ?? 0);
-
-  const statusRef = useRef(status);
-
-  useEffect(() => {
-    statusRef.current = status;
-  }, [status]);
-
-  useEffect(
-    () => () => {
-      requestIdRef.current += 1;
-      animationRef.current?.cancel();
-      if (statusRef.current === "broken" || statusRef.current === "driving") {
-        dispatch(setCarStatus({ id: car.id, status: "idle" }));
-      }
-    },
-    [car.id, dispatch],
-  );
-
-  const watchDriveStatus = async (animation: Animation, requestId: number) => {
-    try {
-      await dispatch(driveCar(car.id)).unwrap();
-    } catch {
-      if (requestId !== requestIdRef.current) return;
-      animation.pause();
-      dispatch(setCarStatus({ id: car.id, status: "broken" }));
-    }
-  };
+  const requestIdRef = useEngineCleanup(car.id, status, animationRef);
 
   const handleStart = async () => {
     if (status === "driving" || status === "broken") return;
@@ -62,36 +36,18 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
     const requestId = requestIdRef.current;
     const { velocity, distance } = await dispatch(startCar(car.id)).unwrap();
     if (requestId !== requestIdRef.current) return;
+
     const duration = distance / velocity;
-
-    const trackWidth =
-      carTrackRef.current.clientWidth - carRef.current.clientWidth;
-
-    const animation = carRef.current.animate(
-      [
-        { transform: "translateX(0px)" },
-        { transform: `translateX(${trackWidth}px )` },
-      ],
-      {
-        duration,
-        fill: "forwards",
-        easing: "linear",
-      },
+    const animation = createDriveAnimation(
+      carRef.current,
+      carTrackRef.current,
+      duration,
     );
     animationRef.current = animation;
     dispatch(setCarStatus({ id: car.id, status: "driving" }));
 
-    watchDriveStatus(animation, requestId);
-
-    animation.finished.then(() => {
-      dispatch(
-        finishRace({
-          id: car.id,
-          name: car.name,
-          time: distance / velocity / 1000,
-        }),
-      );
-    });
+    watchDriveStatus(dispatch, car.id, animation, requestId, requestIdRef);
+    animation.finished.then(() => dispatchFinishRace(dispatch, car, duration));
   };
 
   const handleStop = async () => {
@@ -100,20 +56,7 @@ const useCarEngine = (car: Car): UseCarEngineReturn => {
     dispatch(setCarStatus({ id: car.id, status: "idle" }));
     await dispatch(stopCar(car.id));
   };
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    if (raceStatus === "started") {
-      handleStart();
-    }
-    if (raceStatus === "stopped") {
-      handleStop();
-    }
-  }, [commandId, raceStatus]);
-
+  useRaceCommandEffect(handleStart, handleStop);
   return { carTrackRef, carRef, handleStart, handleStop, status };
 };
 
